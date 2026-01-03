@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Products - Rhyll Admin</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-body" data-page="products">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <img src="images/rhyll-logo.png" alt="Rhyll" class="logo" style="height: 2.5rem;">
+            <span class="font-bold text-slate-800">Admin Portal</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                Dashboard
+            </a>
+            <a href="admin-products.html" class="nav-item active">
+                <i class="fas fa-box"></i>
+                Products
+            </a>
+            <a href="admin-add-product.html" class="nav-item">
+                <i class="fas fa-plus-circle"></i>
+                Add Product
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-external-link-alt"></i>
+                View Store
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <button onclick="logout()" class="nav-item w-full text-left"
+                style="background:none;border:none;cursor:pointer;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Manage Products</h1>
+                <p class="text-slate-500">View and manage your store's inventory</p>
+            </div>
+            <a href="admin-add-product.html" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i> Add Product
+            </a>
+        </header>
+
+        <section class="admin-card">
+            <div class="card-header">
+                <h2 class="card-title">Product List</h2>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Search products..." class="form-input"
+                        style="padding: 0.5rem; font-size: 0.875rem; width: 250px;">
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Info</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal-overlay">
+        <div class="admin-modal">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Confirm Delete</h2>
+            <p class="text-slate-600">Are you sure you want to delete this product? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn btn-outline btn-full">Cancel</button>
+                <button onclick="deleteProduct()" class="btn btn-primary btn-full"
+                    style="background-color: #ef4444; border-color: #ef4444;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

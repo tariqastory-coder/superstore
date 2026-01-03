@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - Rhyll Super Store</title>
+    <link rel="icon" type="image/png" href="images/icon-light-32x32.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkout-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--slate-200);
+        }
+
+        .order-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .order-item-details {
+            flex: 1;
+        }
+
+        .order-item-name {
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .order-item-meta {
+            font-size: 0.875rem;
+            color: var(--slate-600);
+        }
+
+        .order-item-price {
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.125rem;
+        }
+
+        .price-breakdown {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--slate-200);
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--slate-600);
+        }
+
+        .price-row.total {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--slate-200);
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid var(--slate-200);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-blue);
+            background-color: var(--primary-blue-light);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-blue);
+            background-color: var(--primary-blue-light);
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 1rem;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .payment-option-label {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .payment-icon {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--slate-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--primary-blue-light);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .card-input-group .form-input {
+            flex: 1;
+        }
+
+        .card-input-group .form-input:first-child {
+            flex: 2;
+        }
+
+        .trust-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: var(--slate-50);
+            border-radius: 8px;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--slate-600);
+            font-size: 0.875rem;
+        }
+
+        .trust-badge i {
+            color: var(--green-600);
+            font-size: 1.25rem;
+        }
+
+        .complete-payment-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .complete-payment-btn:hover {
+            background: var(--primary-blue-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .complete-payment-btn:active {
+            transform: translateY(0);
+        }
+
+        .complete-payment-btn:disabled {
+            background: var(--slate-400);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-notice {
+            text-align: center;
+            color: var(--slate-600);
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .security-notice i {
+            color: var(--green-600);
+            margin-right: 0.25rem;
+        }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-cart-message i {
+            font-size: 4rem;
+            color: var(--slate-300);
+            margin-bottom: 1rem;
+        }
+
+        .upi-input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .upi-input-group .form-input {
+            flex: 1;
+        }
+
+        .wallet-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .wallet-option {
+            padding: 0.75rem;
+            border: 2px solid var(--slate-200);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wallet-option:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .wallet-option.selected {
+            border-color: var(--primary-blue);
+            background-color: var(--primary-blue-light);
+        }
+
+        .wallet-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-content">
+                <a href="index.html">
+                    <img src="images/rhyll-logo.png" alt="Rhyll" class="logo">
+                </a>
+                <div class="flex items-center gap-4" style="margin-left: auto;">
+                    <nav class="header-nav">
+                        <a href="index.html" class="nav-link">Home</a>
+                        <a href="cart.html" class="nav-link">Cart</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="checkout-container">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Secure Checkout</h1>
+            <p class="text-slate-600">Complete your purchase securely</p>
+        </div>
+
+        <div id="empty-cart-message" class="empty-cart-message" style="display: none;">
+            <i class="fas fa-shopping-cart"></i>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Your cart is empty</h2>
+            <p class="text-slate-600 mb-4">Add items to your cart before checkout</p>
+            <a href="cart.html" class="btn btn-primary">Return to Cart</a>
+        </div>
+
+        <div id="checkout-content" class="checkout-grid">
+            <!-- Order Summary -->
+            <div class="checkout-section">
+                <h2 class="section-title">Order Summary</h2>
+                <div id="order-items"></div>
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">£0.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Shipping</span>
+                        <span id="shipping">£2.99</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Tax</span>
+                        <span id="tax">£0.00</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span id="total">£0.00</span>
+                    </div>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="trust-badges">
+                    <div class="trust-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure Payment</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>SSL Encrypted</span>
+                    </div>
+                    <div class="trust-badge">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Verified</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="checkout-section">
+                <h2 class="section-title">Payment Details</h2>
+
+                <!-- Payment Method Selection -->
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-option" data-method="card">
+                            <input type="radio" name="payment-method" id="payment-card" value="card" checked>
+                            <label for="payment-card" class="payment-option-label">
+                                <i class="fas fa-credit-card payment-icon"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+                        <div class="payment-option" data-method="upi">
+                            <input type="radio" name="payment-method" id="payment-upi" value="upi">
+                            <label for="payment-upi" class="payment-option-label">
+                                <i class="fas fa-mobile-alt payment-icon"></i>
+                                <span>UPI</span>
+                            </label>
+                        </div>
+                        <div class="payment-option" data-method="wallet">
+                            <input type="radio" name="payment-method" id="payment-wallet" value="wallet">
+                            <label for="payment-wallet" class="payment-option-label">
+                                <i class="fas fa-wallet payment-icon"></i>
+                                <span>Digital Wallet</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Payment Form -->
+                <div id="card-payment-form">
+                    <div class="form-group">
+                        <label for="card-number" class="form-label">Card Number</label>
+                        <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456"
+                            maxlength="19">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="card-expiry" class="form-label">Expiry Date</label>
+                            <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvv" class="form-label">CVV</label>
+                            <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-name" class="form-label">Cardholder Name</label>
+                        <input type="text" id="card-name" class="form-input" placeholder="John Doe">
+                    </div>
+                </div>
+
+                <!-- UPI Payment Form -->
+                <div id="upi-payment-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="upi-id" class="form-label">UPI ID</label>
+                        <div class="upi-input-group">
+                            <input type="text" id="upi-id" class="form-input" placeholder="yourname@paytm">
+                            <button type="button" class="btn btn-outline" style="white-space: nowrap;">Verify</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wallet Payment Form -->
+                <div id="wallet-payment-form" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Select Wallet</label>
+                        <div class="wallet-options">
+                            <div class="wallet-option" data-wallet="paypal">
+                                <i class="fab fa-paypal wallet-icon" style="color: #0070ba;"></i>
+                                <div style="font-size: 0.875rem; font-weight: 600;">PayPal</div>
+                            </div>
+                            <div class="wallet-option" data-wallet="google">
+                                <i class="fab fa-google-pay wallet-icon" style="color: #4285f4;"></i>
+                                <div style="font-size: 0.875rem; font-weight: 600;">Google Pay</div>
+                            </div>
+                            <div class="wallet-option" data-wallet="apple">
+                                <i class="fab fa-apple wallet-icon" style="color: #000;"></i>
+                                <div style="font-size: 0.875rem; font-weight: 600;">Apple Pay</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selected-wallet" value="">
+                    </div>
+                </div>
+
+                <!-- Billing Details -->
+                <h3 class="section-title" style="font-size: 1.25rem; margin-top: 2rem;">Billing Details</h3>
+                <div class="form-group">
+                    <label for="billing-name" class="form-label">Full Name</label>
+                    <input type="text" id="billing-name" class="form-input" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="billing-email" class="form-label">Email Address</label>
+                    <input type="email" id="billing-email" class="form-input" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="billing-phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="billing-phone" class="form-input" placeholder="+44 123 456 7890" required>
+                </div>
+                <div class="form-group">
+                    <label for="billing-address" class="form-label">Address</label>
+                    <input type="text" id="billing-address" class="form-input" placeholder="123 Main Street" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="billing-city" class="form-label">City</label>
+                        <input type="text" id="billing-city" class="form-input" placeholder="London" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="billing-postcode" class="form-label">Postcode</label>
+                        <input type="text" id="billing-postcode" class="form-input" placeholder="SW1A 1AA" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="billing-country" class="form-label">Country</label>
+                    <input type="text" id="billing-country" class="form-input" placeholder="United Kingdom" required>
+                </div>
+
+                <button id="complete-payment-btn" class="complete-payment-btn">
+                    <i class="fas fa-lock"></i>
+                    Complete Payment
+                </button>
+                <p class="security-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    Your payment information is secure and encrypted
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rhyll. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        let selectedPaymentMethod = 'card';
+        let selectedWallet = '';
+
+        // Format card number
+        document.getElementById('card-number')?.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formatted;
+        });
+
+        // Format expiry date
+        document.getElementById('card-expiry')?.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Format CVV (numbers only)
+        document.getElementById('card-cvv')?.addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Payment method selection
+        document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                selectedPaymentMethod = this.value;
+                document.querySelectorAll('.payment-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.closest('.payment-option').classList.add('selected');
+
+                // Show/hide payment forms
+                document.getElementById('card-payment-form').style.display =
+                    this.value === 'card' ? 'block' : 'none';
+                document.getElementById('upi-payment-form').style.display =
+                    this.value === 'upi' ? 'block' : 'none';
+                document.getElementById('wallet-payment-form').style.display =
+                    this.value === 'wallet' ? 'block' : 'none';
+            });
+        });
+
+        // Wallet selection
+        document.querySelectorAll('.wallet-option').forEach(option => {
+            option.addEventListener('click', function () {
+                document.querySelectorAll('.wallet-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                selectedWallet = this.dataset.wallet;
+                document.getElementById('selected-wallet').value = selectedWallet;
+            });
+        });
+
+        // Initialize payment option styling
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function () {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        // Set initial selected state
+        document.querySelector('input[name="payment-method"]:checked')?.closest('.payment-option')?.classList.add('selected');
+
+        // Load cart and render order summary
+        function renderCheckout() {
+            const cart = getCart();
+            const orderItemsContainer = document.getElementById('order-items');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const checkoutContent = document.getElementById('checkout-content');
+
+            if (!cart || cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+                checkoutContent.style.display = 'none';
+                return;
+            }
+
+            emptyCartMessage.style.display = 'none';
+            checkoutContent.style.display = 'grid';
+
+            let subtotal = 0;
+            orderItemsContainer.innerHTML = cart.map(item => {
+                const product = getProductById(item.productId);
+                if (!product) return '';
+
+                const itemTotal = product.price * item.quantity;
+                subtotal += itemTotal;
+
+                return `
+                    <div class="order-item">
+                        <img src="${product.image}" alt="${product.name}" class="order-item-image">
+                        <div class="order-item-details">
+                            <div class="order-item-name">${product.name}</div>
+                            <div class="order-item-meta">Qty: ${item.quantity} × £${product.price.toFixed(2)}</div>
+                        </div>
+                        <div class="order-item-price">£${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const shipping = 2.99;
+            const tax = subtotal * 0.20; // 20% VAT
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
+            document.getElementById('shipping').textContent = `£${shipping.toFixed(2)}`;
+            document.getElementById('tax').textContent = `£${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `£${total.toFixed(2)}`;
+        }
+
+        // Complete payment
+        document.getElementById('complete-payment-btn')?.addEventListener('click', function () {
+            const cart = getCart();
+            if (!cart || cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            // Validate billing details
+            const billingName = document.getElementById('billing-name').value.trim();
+            const billingEmail = document.getElementById('billing-email').value.trim();
+            const billingPhone = document.getElementById('billing-phone').value.trim();
+            const billingAddress = document.getElementById('billing-address').value.trim();
+            const billingCity = document.getElementById('billing-city').value.trim();
+            const billingPostcode = document.getElementById('billing-postcode').value.trim();
+            const billingCountry = document.getElementById('billing-country').value.trim();
+
+            if (!billingName || !billingEmail || !billingPhone || !billingAddress || !billingCity || !billingPostcode || !billingCountry) {
+                alert('Please fill in all billing details');
+                return;
+            }
+
+            // Validate payment method specific fields
+            if (selectedPaymentMethod === 'card') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+                const cardName = document.getElementById('card-name').value.trim();
+
+                if (cardNumber.length < 13 || cardExpiry.length < 5 || cardCvv.length < 3 || !cardName) {
+                    alert('Please fill in all card details');
+                    return;
+                }
+            } else if (selectedPaymentMethod === 'upi') {
+                const upiId = document.getElementById('upi-id').value.trim();
+                if (!upiId || !upiId.includes('@')) {
+                    alert('Please enter a valid UPI ID');
+                    return;
+                }
+            } else if (selectedPaymentMethod === 'wallet') {
+                if (!selectedWallet) {
+                    alert('Please select a wallet');
+                    return;
+                }
+            }
+
+            // Disable button and show loading
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            // Simulate payment processing
+            setTimeout(() => {
+                // Store order data
+                const orderData = {
+                    items: cart,
+                    total: parseFloat(document.getElementById('total').textContent.replace('£', '')),
+                    paymentMethod: selectedPaymentMethod,
+                    wallet: selectedWallet,
+                    billing: {
+                        name: billingName,
+                        email: billingEmail,
+                        phone: billingPhone,
+                        address: billingAddress,
+                        city: billingCity,
+                        postcode: billingPostcode,
+                        country: billingCountry
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                // Simulate random success/failure (90% success rate for demo)
+                const success = Math.random() > 0.1;
+
+                if (success) {
+                    // Clear cart on success
+                    clearCart();
+                    // Redirect to success page
+                    window.location.href = `payment-success.html?order=${encodeURIComponent(JSON.stringify(orderData))}`;
+                } else {
+                    // Redirect to failure page
+                    window.location.href = `payment-failure.html?reason=payment_declined`;
+                }
+            }, 2000);
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCheckout();
+        });
+    </script>
+</body>
+
+</html>
+

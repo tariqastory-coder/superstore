@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Rhyll</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-body" data-page="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <img src="images/rhyll-logo.png" alt="Rhyll" class="logo" style="height: 2.5rem;">
+            <span class="font-bold text-slate-800">Admin Portal</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item active">
+                <i class="fas fa-chart-line"></i>
+                Dashboard
+            </a>
+            <a href="admin-products.html" class="nav-item">
+                <i class="fas fa-box"></i>
+                Products
+            </a>
+            <a href="admin-add-product.html" class="nav-item">
+                <i class="fas fa-plus-circle"></i>
+                Add Product
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-external-link-alt"></i>
+                View Store
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <button onclick="logout()" class="nav-item w-full text-left"
+                style="background:none;border:none;cursor:pointer;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Dashboard Overview</h1>
+                <p class="text-slate-500">Welcome back, Admin!</p>
+            </div>
+            <div class="flex gap-4">
+                <a href="admin-add-product.html" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus mr-2"></i> Add New Product
+                </a>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-blue">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Projects</h3>
+                    <p id="total-products">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Active Items</h3>
+                    <p id="active-products">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-orange">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Out of Stock</h3>
+                    <p id="out-of-stock">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Products -->
+        <section class="admin-card">
+            <div class="card-header">
+                <h2 class="card-title">Recently Added Products</h2>
+                <a href="admin-products.html" class="text-blue-600 text-sm font-semibold">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-products-list">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

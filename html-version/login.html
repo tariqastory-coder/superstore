@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rhyll</title>
+    <link rel="icon" type="image/png" href="images/icon-light-32x32.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50">
+    <div class="flex items-center justify-center" style="min-height: 100vh; padding: 2rem 1rem;">
+        <div class="card" style="max-width: 28rem; width: 100%; padding: 2rem;">
+            <div class="text-center mb-8">
+                <img src="images/rhyll-logo.png" alt="Rhyll" style="height: 3rem; width: auto; margin: 0 auto 1rem;">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
+                <p class="text-slate-600">Login to your Rhyll account</p>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+                    <div id="email-error" class="error-message"
+                        style="color: var(--red-500); font-size: 0.875rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                    <div id="password-error" class="error-message"
+                        style="color: var(--red-500); font-size: 0.875rem; margin-top: 0.25rem; display: none;"></div>
+                </div>
+
+                <div id="form-error" class="error-message"
+                    style="color: var(--red-500); font-size: 0.875rem; margin-bottom: 1rem; display: none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-full mb-4">Login</button>
+
+                <p class="text-center text-slate-600 text-sm">
+                    Don't have an account?
+                    <a href="signup.html" class="text-blue-600 font-semibold">Sign up</a>
+                </p>
+
+                <p class="text-center text-slate-600 text-sm mt-4">
+                    <a href="index.html" class="text-blue-600">← Back to Home</a>
+                </p>
+            </form>
+
+            <div class="mt-6 p-4 bg-slate-100 rounded-lg">
+                <p class="text-sm text-slate-600 mb-2"><strong>Demo Credentials:</strong></p>
+                <p class="text-sm text-slate-600">Email: user@example.com</p>
+                <p class="text-sm text-slate-600">Password: password123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearAllErrors();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Validate
+            if (!validateEmail(email)) {
+                showError('email', 'Please enter a valid email address');
+                return;
+            }
+
+            if (!validatePassword(password)) {
+                showError('password', 'Password must be at least 6 characters');
+                return;
+            }
+
+            // Attempt login
+            const result = login(email, password);
+
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                const formError = document.getElementById('form-error');
+                formError.textContent = result.message;
+                formError.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

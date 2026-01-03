@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Rhyll Admin</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="admin-body" data-page="add-product">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <img src="images/rhyll-logo.png" alt="Rhyll" class="logo" style="height: 2.5rem;">
+            <span class="font-bold text-slate-800">Admin Portal</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                Dashboard
+            </a>
+            <a href="admin-products.html" class="nav-item">
+                <i class="fas fa-box"></i>
+                Products
+            </a>
+            <a href="admin-add-product.html" class="nav-item active">
+                <i class="fas fa-plus-circle"></i>
+                Add Product
+            </a>
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-external-link-alt"></i>
+                View Store
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-100">
+            <button onclick="logout()" class="nav-item w-full text-left"
+                style="background:none;border:none;cursor:pointer;">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div>
+                <h1 id="form-title" class="text-3xl font-bold text-slate-900">Add New Product</h1>
+                <p class="text-slate-500">Fill in the details to create a new product in your catalog</p>
+            </div>
+            <a href="admin-products.html" class="btn btn-outline">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Products
+            </a>
+        </header>
+
+        <section class="admin-card">
+            <form id="product-form" class="admin-form">
+                <input type="hidden" name="id" id="product-id">
+
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Image Upload Column -->
+                    <div>
+                        <label class="form-label">Product Image</label>
+                        <div id="upload-area" class="upload-area">
+                            <input type="file" id="file-input" hidden accept="image/*">
+                            <div id="upload-prompt">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <p class="font-semibold">Click or drag & drop to upload</p>
+                                <p class="text-sm text-slate-500">Supports PNG, JPG, WEBP</p>
+                            </div>
+                            <div id="image-preview" class="image-preview">
+                                <img src="" alt="Preview">
+                                <p class="text-xs text-blue-600 mt-2">Click to change image</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Column -->
+                    <div class="space-y-4">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" id="name" name="name" class="form-input" required
+                                placeholder="e.g. Organic Avocados">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="price" class="form-label">Price (£)</label>
+                                <input type="number" id="price" name="price" step="0.01" class="form-input" required
+                                    placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-input" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Grocery">Grocery</option>
+                                    <option value="Bakery">Bakery</option>
+                                    <option value="Baby Care">Baby Care</option>
+                                    <option value="Health & Beauty">Health & Beauty</option>
+                                    <option value="Household">Household</option>
+                                    <option value="Drinks">Drinks</option>
+                                    <option value="Crockery">Crockery</option>
+                                    <option value="Dairy">Dairy</option>
+                                    <option value="Perfume">Perfume</option>
+                                    <option value="Fruits">Fruits</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Snacks">Snacks</option>
+                                    <option value="Beverages">Beverages</option>
+                                    <option value="Personal Care">Personal Care</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" name="description" class="form-input" rows="4"
+                                placeholder="Enter product description..."></textarea>
+                        </div>
+
+                        <div class="form-group flex items-center gap-3">
+                            <input type="checkbox" id="status" name="status" checked style="width: 20px; height: 20px;">
+                            <label for="status" class="form-label mb-0">Product is active and in stock</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end gap-4">
+                    <button type="button" onclick="window.location.href='admin-products.html'"
+                        class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

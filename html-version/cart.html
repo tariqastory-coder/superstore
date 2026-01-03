@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Rhyll</title>
+    <link rel="icon" type="image/png" href="images/icon-light-32x32.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1200px) {
+            .cart-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 1199px) and (min-width: 992px) {
+            .cart-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 991px) and (min-width: 768px) {
+            .cart-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 767px) and (min-width: 576px) {
+            .cart-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 575px) {
+            .cart-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .cart-item-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid var(--slate-200);
+        }
+
+        .cart-item-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .cart-item-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--slate-100);
+        }
+
+        .cart-item-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--slate-300);
+            color: var(--red-600);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .cart-item-delete-btn:hover {
+            background: var(--red-600);
+            color: white;
+            border-color: var(--red-600);
+            transform: scale(1.1);
+        }
+
+        .cart-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-item-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.6em;
+        }
+
+        .cart-item-category {
+            font-size: 0.75rem;
+            color: var(--slate-500);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .cart-item-quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .quantity-control-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--slate-300);
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--slate-50);
+            color: var(--slate-700);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .quantity-btn:hover:not(:disabled) {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .quantity-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .quantity-btn.decrease {
+            border-right: 1px solid var(--slate-300);
+        }
+
+        .quantity-btn.increase {
+            border-left: 1px solid var(--slate-300);
+        }
+
+        .quantity-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--slate-900);
+            font-size: 0.9375rem;
+            padding: 0 0.5rem;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            max-width: 420px;
+            margin-left: auto;
+            border: 1px solid var(--slate-200);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--slate-200);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            border-top: 2px solid var(--slate-200);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .summary-label {
+            color: var(--slate-600);
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .summary-value.total {
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .cart-actions .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .empty-cart-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            color: var(--slate-300);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <!-- // ...existing code... -->
+<header class="header">
+    <div class="header-container">
+        <div class="header-content">
+            <a href="index.html"><img src="images/rhyll-logo.png" alt="Rhyll" class="logo"></a>
+            <div class="flex items-center gap-4" style="margin-left: auto;">
+                <nav class="header-nav">
+                    <a href="products.html" class="nav-link">Shop</a>
+                    <a href="index.html" class="nav-link">Home</a>
+                </nav>
+                <div class="flex items-center gap-3">
+                    <a href="wishlist.html" class="icon-link"><i class="fas fa-heart"></i><span id="wishlist-count"
+                            class="icon-badge red" style="display: none;">0</span></a>
+                    <a href="cart.html" class="icon-link"><i class="fas fa-shopping-cart"></i><span id="cart-count"
+                            class="icon-badge" style="display: none;">0</span></a>
+                </div>
+
+                <!-- Admin Login button (added) -->
+                <div style="margin-left: 1rem;">
+                    <button id="admin-login-btn" class="btn btn-outline" style="padding: 0.4rem 0.6rem;">Admin</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- // ...existing code... -->
+
+<!-- // ...existing code... -->
+    <main class="container py-20">
+        <h1 class="text-3xl font-bold text-slate-900 mb-6">Your Shopping Cart</h1>
+
+        <div id="empty-cart" class="empty-cart-container" style="display:none;">
+            <i class="fas fa-shopping-cart empty-cart-icon"></i>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">Your cart is empty</h2>
+            <p class="text-slate-600 mb-6">Add some products to get started!</p>
+            <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+        </div>
+
+        <div id="cart-items" class="cart-grid"></div>
+
+        <div class="cart-summary">
+            <h2 class="text-xl font-bold text-slate-900 mb-4">Order Summary</h2>
+            <div class="summary-row">
+                <span class="summary-label">Subtotal</span>
+                <span id="subtotal" class="summary-value">£0.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Shipping</span>
+                <span class="summary-value">£2.99</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Tax</span>
+                <span id="tax" class="summary-value">£0.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total</span>
+                <span id="total" class="summary-value total">£0.00</span>
+            </div>
+            <div class="cart-actions">
+                <button onclick="checkout()" class="btn btn-primary">
+                    <i class="fas fa-lock"></i> Checkout
+                </button>
+                <button onclick="clearCart()" class="btn btn-outline">
+                    <i class="fas fa-trash-alt"></i> Clear Cart
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rhyll. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal (added) -->
+    <div id="admin-login-modal" class="modal-overlay" style="display: none; align-items: center; justify-content: center;"
+         onclick="if(event.target === this) closeAdminLoginModal()">
+        <div class="modal-content card p-6" role="dialog" aria-modal="true" aria-labelledby="admin-login-title" style="max-width: 420px; width: 100%;">
+            <h2 id="admin-login-title" class="text-xl font-bold mb-2">Admin Login</h2>
+            <p class="text-slate-600 mb-4">Enter admin password to manage products.</p>
+            <form id="admin-login-form">
+                <label for="admin-password" class="sr-only">Password</label>
+                <input id="admin-password" type="password" placeholder="Password" class="form-input" required style="margin-bottom: 0.75rem; width:100%;">
+                <div style="display:flex;gap:0.5rem;">
+                    <button type="button" onclick="closeAdminLoginModal()" class="btn btn-outline" style="flex:1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Login</button>
+                </div>
+                <p id="admin-login-error" class="text-red-600" style="display:none;margin-top:0.5rem;">Invalid credentials</p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        // ...existing code...
+        function renderCart() {
+            const cart = getCart();
+            const cartItemsContainer = document.getElementById('cart-items');
+            const emptyCart = document.getElementById('empty-cart');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '';
+                emptyCart.style.display = 'block';
+                updateTotals();
+                return;
+            }
+
+            emptyCart.style.display = 'none';
+            cartItemsContainer.innerHTML = cart.map(item => {
+                const product = getProductById(item.productId);
+                if (!product) return '';
+
+                const itemTotal = (product.price * item.quantity).toFixed(2);
+
+                const isMinQuantity = item.quantity <= 1;
+                
+                return `
+          <div class="cart-item-card">
+            <div class="cart-item-image-wrapper">
+              <img src="${product.image}" alt="${product.name}" class="cart-item-image">
+              <button onclick="removeItem(${product.id})" class="cart-item-delete-btn" title="Remove item">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="cart-item-info">
+              <h3 class="cart-item-name" title="${product.name}">${product.name}</h3>
+              <p class="cart-item-category">${product.category}</p>
+              <div class="cart-item-price">£${itemTotal}</div>
+              <div class="cart-item-quantity-controls">
+                <div class="quantity-control-group">
+                  <button onclick="updateQuantity(${product.id}, ${item.quantity - 1})" 
+                          class="quantity-btn decrease" 
+                          title="Decrease quantity"
+                          ${isMinQuantity ? 'disabled' : ''}>
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <span class="quantity-display">${item.quantity}</span>
+                  <button onclick="updateQuantity(${product.id}, ${item.quantity + 1})" 
+                          class="quantity-btn increase" 
+                          title="Increase quantity">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+            }).join('');
+
+            updateTotals();
+        }
+
+        // ...existing code...
+        function updateQuantity(productId, newQuantity) {
+            updateCartQuantity(productId, newQuantity);
+            renderCart();
+        }
+
+        function removeItem(productId) {
+            removeFromCart(productId);
+            renderCart();
+        }
+
+        function updateTotals() {
+            const subtotal = getCartTotal();
+            const shipping = 2.99;
+            const tax = subtotal * 0.20; // 20% VAT
+            const total = subtotal + shipping + tax;
+            
+            document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `£${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `£${total.toFixed(2)}`;
+        }
+
+        function checkout() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+
+        // Admin login client-side gate (temporary)
+        (function () {
+            const adminBtn = document.getElementById('admin-login-btn');
+            const adminModal = document.getElementById('admin-login-modal');
+            const adminForm = document.getElementById('admin-login-form');
+            const adminError = document.getElementById('admin-login-error');
+
+            function openAdminLoginModal() {
+                adminError.style.display = 'none';
+                adminModal.style.display = 'flex';
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password').focus();
+            }
+            window.closeAdminLoginModal = function () {
+                adminModal.style.display = 'none';
+            };
+
+            adminBtn && adminBtn.addEventListener('click', openAdminLoginModal);
+
+            adminForm && adminForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pwd = document.getElementById('admin-password').value.trim();
+
+                // TODO: replace with secure server-side authentication
+                const HARD_CODED_ADMIN_PASSWORD = 'rhylsuperstore'; // change or remove
+
+                if (pwd === HARD_CODED_ADMIN_PASSWORD) {
+                    // mark admin session (local only) and redirect to admin dashboard
+                    localStorage.setItem('isAdmin', '1');
+                    closeAdminLoginModal();
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    adminError.style.display = 'block';
+                }
+            });
+
+            // Update button label when already signed in
+            if (localStorage.getItem('isAdmin') === '1' && adminBtn) {
+                adminBtn.textContent = 'Admin';
+            }
+        }());
+    </script>
+</body>
+
+</html>
+<!-- // ...existing code... -->

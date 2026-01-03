@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - Rhyll Super Store</title>
+    <link rel="icon" type="image/png" href="images/icon-light-32x32.png">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .failure-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .failure-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .failure-icon i {
+            font-size: 4rem;
+            color: white;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .failure-message {
+            margin-bottom: 2rem;
+        }
+
+        .failure-message h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 1rem;
+        }
+
+        .failure-message p {
+            font-size: 1.125rem;
+            color: var(--slate-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-details {
+            background: var(--slate-50);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .error-details h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 1rem;
+        }
+
+        .error-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .error-details li {
+            padding: 0.5rem 0;
+            color: var(--slate-600);
+            display: flex;
+            align-items: start;
+            gap: 0.5rem;
+        }
+
+        .error-details li i {
+            color: var(--red-600);
+            margin-top: 0.25rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="header-content">
+                <a href="index.html">
+                    <img src="images/rhyll-logo.png" alt="Rhyll" class="logo">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="failure-container">
+        <div class="failure-icon">
+            <i class="fas fa-times"></i>
+        </div>
+
+        <div class="failure-message">
+            <h1>Payment Failed</h1>
+            <p>We're sorry, but your payment could not be processed.</p>
+            <p id="failure-reason">Please try again or use a different payment method.</p>
+        </div>
+
+        <div class="error-details">
+            <h3>What you can do:</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Check your payment details and try again</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Ensure you have sufficient funds or credit limit</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Try a different payment method</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span>Contact your bank or payment provider if the issue persists</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="action-buttons">
+            <a href="checkout.html" class="btn btn-primary btn-large">
+                <i class="fas fa-redo"></i> Try Again
+            </a>
+            <a href="cart.html" class="btn btn-outline btn-large">
+                <i class="fas fa-shopping-cart"></i> Return to Cart
+            </a>
+            <a href="index.html" class="btn btn-outline btn-large">
+                <i class="fas fa-home"></i> Continue Shopping
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rhyll. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get failure reason from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const reason = urlParams.get('reason');
+
+            const reasonMessages = {
+                'payment_declined': 'Your payment was declined by the bank. Please check your card details or try a different payment method.',
+                'insufficient_funds': 'Insufficient funds. Please use a different payment method or add funds to your account.',
+                'network_error': 'A network error occurred. Please check your connection and try again.',
+                'timeout': 'The payment request timed out. Please try again.',
+                'invalid_details': 'Invalid payment details. Please check and try again.'
+            };
+
+            const failureReason = document.getElementById('failure-reason');
+            if (reason && reasonMessages[reason]) {
+                failureReason.textContent = reasonMessages[reason];
+            } else if (reason) {
+                failureReason.textContent = 'Error: ' + reason.replace(/_/g, ' ');
+            }
+        });
+    </script>
+</body>
+
+</html>
+
